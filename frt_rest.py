@@ -43,7 +43,7 @@ class saveBooking:
         f = codecs.open( filename,'w')
         f.write(data)
         f.close() 
-        return "{flag:'successful'}"
+        return "flag:'successful'"
 
     def GET(self):
         return "[]"
