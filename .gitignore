@@ -55,4 +55,8 @@ target/
 
 data/
 
+<<<<<<< Updated upstream
 sessions/
+=======
+.idea/
+>>>>>>> Stashed changes
