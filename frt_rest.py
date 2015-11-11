@@ -9,6 +9,11 @@ import web
 
 web.config.debug = False
 
+FLAG_SUCCESS = '{"flag":"successful"}'
+
+FLAG_ERROR_FILE_NOT_FOUND = '{"flag":"error","error_no":"10001","msg":"file not found."}'
+FLAG_ERROR_TYPE_INVALID = '{"flag":"error","error_no":"10002","msg":"Type invalid."}'
+
 urls = (
     '/', 'index',
     '/getBooking', 'getBooking',
@@ -28,20 +33,7 @@ urls = (
     "/reset", "reset"
 )
 
-class ping:
-    def GET(self):
-        return "flag:'successful'"
 
-
-class count:
-    def GET(self):
-        session.count += 1
-        return str(session.count)
-
-class reset:
-    def GET(self):
-        session.kill()
-        return ""
 
 class getCustomer:
     def POST(self):
@@ -56,6 +48,33 @@ class getCustomer:
         #print json_str
         return json_str
 
+class newCustomer:
+    def POST(self):
+        data = web.data()
+        json_obj = json.loads(data, "UTF-8")
+        filename = "data/customer/new_custom.json"
+        json_str = readJson(filename)
+
+        try:
+            customers = json.loads(json_str, "UTF-8")
+        except:
+            customers = []
+
+        if type({}) == type(customers):
+            customers = []
+
+        if type([]) == type(customers):
+            customers.append(json_obj)
+
+            str_temp = json.dumps(customers, ensure_ascii=False, indent=2)
+            #print(str_temp)
+            writeJson(filename, str_temp)
+            return FLAG_SUCCESS
+        else:
+            return FLAG_ERROR_TYPE_INVALID
+
+    def GET(self):
+        return "[]"
 
 class getBooking:
     def POST(self):
@@ -77,35 +96,50 @@ class saveBooking:
         # 从上送数据中获得预约日期
         json_obj = json.loads( data )
         booking_date = json_obj["BookingDate"]
-        filename = "data/booking/booking_"+ booking_date +".json" 
-        writeJson(filename, data)
-        return "flag:'successful'"
+        filename = "data/booking/booking_"+ booking_date +".json"
+        str_temp = json.dumps(json_obj, ensure_ascii=False, indent=2)
+        writeJson(filename, str_temp)
+        return FLAG_SUCCESS
 
     def GET(self):
         return "[]"
+
+class ping:
+    def GET(self):
+        return FLAG_SUCCESS
+
+
+class count:
+    def GET(self):
+        session.count += 1
+        return str(session.count)
+
+class reset:
+    def GET(self):
+        session.kill()
+        return ""
 
 def writeJson(filename, data):
     # if( not os.path.exists(filename) ):
     #     makeFile(filename)
 
-    f = codecs.open(filename,'w+')
+    f = codecs.open(filename,'w+','utf-8')
     f.write(data)
     f.close() 
-    return "flag:'successful'"
+    return FLAG_SUCCESS
 
 def readJson(filename):
     json_str = ""
-    print os.path.exists(filename)
+    #print os.path.exists(filename)
     if(os.path.exists(filename)):
         f = codecs.open( filename,'r','utf-8')
         json_str = f.read()
+        f.close()
         # 为了去除BOM 不得不做的检查。
         if codecs.BOM_UTF8 == json_str[:3]:
             json_str = json_str[3:]
-
-        f.close()
     else:
-        json_str = '{"flag":"error","error_no":"10001","msg":"file not found."}'
+        json_str = FLAG_ERROR_FILE_NOT_FOUND
     return json_str
 
 
