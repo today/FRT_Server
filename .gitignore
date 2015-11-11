@@ -53,8 +53,8 @@ docs/_build/
 # PyBuilder
 target/
 
-data/
-
 sessions/
 
 .idea/
+
+data/**.json
