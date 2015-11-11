@@ -14,17 +14,14 @@ urls = (
     '/getBooking', 'getBooking',
     '/saveBooking', 'saveBooking',
 
-    '/getBooking', 'getBooking',
-    '/saveBooking', 'saveBooking',
+    '/getCustomer', 'getCustomer',
+    '/saveCustomer', 'saveCustomer',
 
-    '/getBooking', 'getBooking',
-    '/saveBooking', 'saveBooking',
+    '/getAllMedicine', 'getAllMedicine',
+    '/saveAllMedicine', 'saveAllMedicine',
 
-    '/getBooking', 'getBooking',
-    '/saveBooking', 'saveBooking',
-
-    '/getBooking', 'getBooking',
-    '/saveBooking', 'saveBooking',
+    '/getCase', 'getCase',
+    '/saveCase', 'saveCase',
 
     "/ping", "ping",
     "/count", "count",
@@ -53,10 +50,10 @@ class getBooking:
     def GET(self):
         i = web.input()
         filename = "data/booking/" + i.filename
-        #filename = i.filename
-        print filename
+        print "xxxxx=" + filename
         json_str = '[]'
-        json_str = readJson(filename) 
+        json_str = readJson(filename)
+        #print json_str
         return json_str
 
 class saveBooking:
@@ -67,38 +64,43 @@ class saveBooking:
         json_obj = json.loads( data )
         booking_date = json_obj["BookingDate"]
         filename = "data/booking/booking_"+ booking_date +".json" 
-        writeJson(filename, data):
+        writeJson(filename, data)
         return "flag:'successful'"
 
     def GET(self):
         return "[]"
 
 def writeJson(filename, data):
-    if( not os.path.exists(filename) ):
-        makeFile(filename)
+    # if( not os.path.exists(filename) ):
+    #     makeFile(filename)
 
-    f = codecs.open( filename,'w')
+    f = codecs.open(filename,'w+')
     f.write(data)
     f.close() 
     return "flag:'successful'"
 
 def readJson(filename):
     json_str = ""
+    print os.path.exists(filename)
     if(os.path.exists(filename)):
         f = codecs.open( filename,'r','utf-8')
         json_str = f.read()
+        # 为了去除BOM 不得不做的检查。
+        if codecs.BOM_UTF8 == json_str[:3]:
+            json_str = json_str[3:]
+
         f.close()
-    else
-        json_str = "flag:'error', error_no=1,msg:'file not exists.'"
+    else:
+        json_str = '{"flag":"error","error_no":"10001","msg":"file not found."}'
     return json_str
-
-
-
 
 
 class index:
     def GET(self):
         return "Welcome to FRT!"
+
+
+
 
 if __name__ == "__main__":
     
