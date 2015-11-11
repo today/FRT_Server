@@ -15,7 +15,7 @@ urls = (
     '/saveBooking', 'saveBooking',
 
     '/getCustomer', 'getCustomer',
-    '/saveCustomer', 'saveCustomer',
+    '/newCustomer', 'newCustomer',
 
     '/getAllMedicine', 'getAllMedicine',
     '/saveAllMedicine', 'saveAllMedicine',
@@ -43,6 +43,20 @@ class reset:
         session.kill()
         return ""
 
+class getCustomer:
+    def POST(self):
+        return "[]"
+
+    def GET(self):
+        i = web.input()
+        filename = "data/customer/allCustomer.json"
+        print "filename:" + filename
+        json_str = '[]'
+        json_str = readJson(filename)
+        #print json_str
+        return json_str
+
+
 class getBooking:
     def POST(self):
         return "[]"
@@ -50,7 +64,7 @@ class getBooking:
     def GET(self):
         i = web.input()
         filename = "data/booking/" + i.filename
-        print "xxxxx=" + filename
+        print "filename:" + filename
         json_str = '[]'
         json_str = readJson(filename)
         #print json_str
