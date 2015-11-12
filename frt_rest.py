@@ -11,7 +11,7 @@ web.config.debug = False
 
 FLAG_SUCCESS = '{"flag":"successful"}'
 
-FLAG_ERROR_FILE_NOT_FOUND = '{"flag":"error","error_no":"10001","msg":"file not found."}'
+FLAG_ERROR_FILE_NOT_FOUND = '{"flag":"error","error_no":"10001","msg":"File not found."}'
 FLAG_ERROR_TYPE_INVALID = '{"flag":"error","error_no":"10002","msg":"Type invalid."}'
 
 urls = (
@@ -23,7 +23,6 @@ urls = (
     '/newCustomer', 'newCustomer',
 
     '/getAllMedicine', 'getAllMedicine',
-    '/saveAllMedicine', 'saveAllMedicine',
 
     '/getCase', 'getCase',
     '/saveCase', 'saveCase',
@@ -33,7 +32,18 @@ urls = (
     "/reset", "reset"
 )
 
+class getAllMedicine:
+    def POST(self):
+        return "[]"
 
+    def GET(self):
+        i = web.input()
+        filename = "data/medicine/allMedicine.json"
+        print "filename:" + filename
+        json_str = '[]'
+        json_str = readJson(filename)
+        #print json_str
+        return json_str
 
 class getCustomer:
     def POST(self):
