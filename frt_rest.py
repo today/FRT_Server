@@ -24,13 +24,49 @@ urls = (
 
     '/getAllMedicine', 'getAllMedicine',
 
-    '/getCase', 'getCase',
-    '/saveCase', 'saveCase',
+    '/getRecipe', 'getRecipe',
+    '/saveRecipe', 'saveRecipe',
 
     "/ping", "ping",
     "/count", "count",
     "/reset", "reset"
 )
+
+
+class getRecipe:
+    def POST(self):
+        return "[]"
+
+    def GET(self):
+        i = web.input()
+        filename = "data/recipe/" + i.filename
+        print "filename:" + filename
+        json_str = '[]'
+        json_str = readJson(filename)
+        #print json_str
+        return json_str
+
+class saveRecipe:
+    def POST(self):
+        data = web.data()
+        json_obj = json.loads(data, "UTF-8")
+        #print json_obj
+
+        if type({}) == type(json_obj):
+            case_no = json_obj.get('case').get('case_no')
+            filename = "data/recipe/c" + case_no + ".json"
+            print filename
+
+            str_temp = json.dumps(json_obj, ensure_ascii=False, indent=2)
+            #print(str_temp)
+            writeJson(filename, str_temp)
+            return FLAG_SUCCESS
+        else:
+            print FLAG_ERROR_TYPE_INVALID
+            return FLAG_ERROR_TYPE_INVALID
+
+    def GET(self):
+        return "[]"
 
 class getAllMedicine:
     def POST(self):
