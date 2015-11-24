@@ -54,7 +54,7 @@ class getAllRecipe:
             #print json_str
             print "###"
             all_json.append(json_obj)
-        print json.dumps(  all_json, "UTF-8")
+        #print json.dumps(  all_json, "UTF-8")
         return json.dumps(  all_json, "UTF-8")
 
 class getRecipe:
