@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-  
 
-import codecs 
+import codecs
+import glob
 import json
 import os
 import sys
@@ -25,6 +26,7 @@ urls = (
     '/getAllMedicine', 'getAllMedicine',
 
     '/getRecipe', 'getRecipe',
+    '/getAllRecipe', 'getAllRecipe',
     '/saveRecipe', 'saveRecipe',
 
     "/ping", "ping",
@@ -32,6 +34,28 @@ urls = (
     "/reset", "reset"
 )
 
+
+
+
+class getAllRecipe:
+    def POST(self):
+        return "[]"
+
+    def GET(self):
+        # 筛选出 json 文件
+        json_files = glob.glob('data/recipe/*.json')
+
+        all_json = []
+        for filename in json_files:
+            print "FILENAME:" + filename
+            json_str = readJson(filename)
+            json_obj = json.loads(json_str, "UTF-8")
+            #print "###"
+            #print json_str
+            print "###"
+            all_json.append(json_obj)
+        print json.dumps(  all_json, "UTF-8")
+        return json.dumps(  all_json, "UTF-8")
 
 class getRecipe:
     def POST(self):
@@ -91,8 +115,38 @@ class getCustomer:
         print "filename:" + filename
         json_str = '[]'
         json_str = readJson(filename)
+
+        filename = "data/customer/new_custom.json"
+        print "filename:" + filename
+        json_str2 = '[]'
+        json_str2 = readJson(filename)
+
+        json_obj = json.loads(json_str, "UTF-8")
+        json_obj2 = json.loads(json_str2, "UTF-8")
+
+        json_obj.extend(json_obj2)
+
         #print json_str
-        return json_str
+        return json.dumps(json_obj,"UTF-8")
+
+def func_getAllCustomer():
+    filename = "data/customer/allCustomer.json"
+    print "filename:" + filename
+    json_str = '[]'
+    json_str = readJson(filename)
+
+    filename = "data/customer/new_custom.json"
+    print "filename:" + filename
+    json_str2 = '[]'
+    json_str2 = readJson(filename)
+
+    json_obj = json.loads(json_str, "UTF-8")
+    json_obj2 = json.loads(json_str2, "UTF-8")
+
+    json_obj.extend(json_obj2)
+
+    #print json_str
+    return json.dumps(json_obj,"UTF-8")
 
 class newCustomer:
     def POST(self):
@@ -115,7 +169,7 @@ class newCustomer:
             str_temp = json.dumps(customers, ensure_ascii=False, indent=2)
             #print(str_temp)
             writeJson(filename, str_temp)
-            return FLAG_SUCCESS
+            return func_getAllCustomer()
         else:
             return FLAG_ERROR_TYPE_INVALID
 
@@ -182,7 +236,7 @@ def readJson(filename):
         json_str = f.read()
         f.close()
         # 为了去除BOM 不得不做的检查。
-        if codecs.BOM_UTF8 == json_str[:3]:
+        if codecs.BOM_UTF8 == json_str[:3] :
             json_str = json_str[3:]
     else:
         json_str = FLAG_ERROR_FILE_NOT_FOUND
