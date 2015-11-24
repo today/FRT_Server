@@ -8,7 +8,7 @@ import sys
 import shutil
 import web
 
-web.config.debug = False
+web.config.debug = True
 
 FLAG_SUCCESS = '{"flag":"successful"}'
 
